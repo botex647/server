@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block content %}
+        <div class="eyebrow">ADMINISTRATION</div>
+        <h2>Manage files and folders</h2>
+
+        <p class="muted">
+            Browse the shared folder and select exactly what to remove.
+        </p>
+
+        <div class="notice notice-danger">
+            ⚠ Deletions are permanent. Deleting a folder permanently removes
+            all of its contents.
+        </div>
+        {% if deleted %}
+        <div class="notice notice-success">{{ deleted }}</div>
+        {% endif %}
+
+        <div class="toolbar">
+            <a class="btn btn-secondary" href="{{ url_for('folder.index') }}">
+                ← Normal library
+            </a>
+            <a class="btn btn-secondary" href="{{ url_for('auth.logout') }}">
+                Log out
+            </a>
+        </div>
+
+        <input class="tree-filter" id="tree-filter" type="search"
+               placeholder="Search files by name"
+               aria-label="Search files by name">
+
+        <div class="tree" id="delete-tree">
+            <details class="root-tree" open>
+                <summary>
+                    <span>📁</span>
+                    <span class="tree-label">server_share (root)</span>
+                </summary>
+                {% macro render_entries(entries) %}
+                    {% for entry in entries %}
+                    {% if entry.is_dir %}
+                    <details data-tree-item
+                             data-tree-kind="folder">
+                        <summary>
+                            <span>📁</span>
+                            <span class="tree-label">
+                                {{ entry.name }}
+                                <span class="tree-path">{{ entry.path }}</span>
+                            </span>
+                            <span class="tree-actions">
+                                <form class="inline-form" method="POST"
+                                      action="{{ url_for('admin.delete_folder') }}"
+                                      onsubmit="return confirm('Permanently delete folder and all contents?\n\n{{ entry.path|e }}');">
+                                    <input type="hidden" name="csrf_token"
+                                           value="{{ token }}">
+                                    <input type="hidden" name="foldername"
+                                           value="{{ entry.path }}">
+                                    <button class="tree-folder-delete"
+                                            type="submit">Delete folder</button>
+                                </form>
+                            </span>
+                        </summary>
+                        {{ render_entries(entry.children) }}
+                    </details>
+                    {% else %}
+                    <div class="tree-entry" data-tree-item
+                         data-tree-kind="file"
+                         data-tree-name="{{ entry.name }}">
+                        <span class="tree-main">
+                            <span>{{ entry.icon }}</span>
+                            <span class="tree-label">
+                                <a href="{{ search_result_url(entry.path, false) }}">
+                                    {{ entry.name }}
+                                </a>
+                                <span class="tree-path">{{ entry.path }}</span>
+                            </span>
+                        </span>
+                        <span class="tree-actions">
+                            <form class="inline-form" method="POST"
+                                  action="{{ url_for('admin.delete_file') }}"
+                                  onsubmit="return confirm('Permanently delete this file?\n\n{{ entry.path|e }}');">
+                                <input type="hidden" name="csrf_token"
+                                       value="{{ token }}">
+                                <input type="hidden" name="filename"
+                                       value="{{ entry.path }}">
+                                <button class="delete-button" type="submit">
+                                    Delete file
+                                </button>
+                            </form>
+                        </span>
+                    </div>
+                    {% endif %}
+                    {% else %}
+                    <div class="empty">This folder is empty.</div>
+                    {% endfor %}
+                {% endmacro %}
+                {{ render_entries(tree) }}
+            </details>
+        </div>
+
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}

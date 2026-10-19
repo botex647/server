@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block content %}
+        <div class="breadcrumb">
+            <a class="breadcrumb-link" href="{{ url_for('folder.index') }}">Home</a>
+            {% for item in breadcrumb_items %}
+            <span class="breadcrumb-separator" aria-hidden="true">›</span>
+            {% if loop.last %}
+            <span class="breadcrumb-current" aria-current="page">
+                {{ item.name }}
+            </span>
+            {% else %}
+            <a class="breadcrumb-link" href="{{ item.url }}">{{ item.name }}</a>
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        <section class="hero">
+            <div class="eyebrow">YOUR PERSONAL LIBRARY</div>
+            <h1>Everything in one place.</h1>
+            <p>Stream movies, revisit your favourite dramas,
+               and access study materials from your devices.</p>
+
+            <div class="toolbar">
+                {% if session.get("role") == "Administrator" %}
+                <a class="btn" href="{{ url_for('folder.upload') }}">＋ Upload files</a>
+                <a class="btn btn-secondary" href="{{ url_for('folder.new_folder') }}">＋ New folder</a>
+                {% endif %}
+                {% if not subpath and session.get("role") == "Administrator" %}
+                <a class="btn btn-secondary" href="{{ url_for('admin.manage_delete_entry') }}">
+                    Manage deletions
+                </a>
+                {% endif %}
+            </div>
+        </section>
+
+        {% if not subpath %}
+        <div class="section-title">Your collections</div>
+
+        <div class="folder-grid">
+            {% for folder in root_folders %}
+            <a class="folder-card"
+               href="{{ url_for('folder.index', subpath=folder) }}">
+                <div class="folder-icon">📁</div>
+                <div>
+                    <div class="folder-name">{{ folder }}</div>
+                    <div class="folder-desc">Browse folder</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+
+        {% if not root_folders %}
+            <div class="empty">No folders yet. Create your first folder.</div>
+        {% endif %}
+        {% endif %}
+
+        {% if parent is not none %}
+        <div class="toolbar">
+            <a class="btn btn-secondary"
+               href="{{ url_for('folder.index', subpath=parent) }}">← Back</a>
+        </div>
+        {% endif %}
+
+ {% if subpath %}
+<div class="section-title">Folder contents</div>
+
+<div class="file-list">
+{% for item in items %}
+    <div class="file-card">
+        <div class="file-main">
+            <div class="file-icon">{{ item.icon }}</div>
+            <div>
+                <a class="file-name" href="{{ item.url }}">{{ item.name }}</a>
+                <span class="file-type">{{ item.kind }}</span>
+            </div>
+        </div>
+
+        <a class="btn btn-secondary" href="{{ item.url }}">
+            {% if item.is_dir %}Open
+            {% elif item.kind == "Video" %}Watch
+            {% elif item.kind == "PDF document" %}Read
+            {% else %}Open{% endif %}
+        </a>
+    </div>
+{% else %}
+    <div class="empty">
+        <div style="font-size:34px">📂</div>
+        <p>This folder is empty.</p>
+    </div>
+{% endfor %}
+</div>
+{% endif %}
+        
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+        <div class="eyebrow">DOCUMENT READER</div>
+        <h2>{{ filename }}</h2>
+
+        <iframe
+            title="PDF document"
+            src="{{ url_for('file.serve_file', filename=filename) }}">
+        </iframe>
+
+        <div class="toolbar">
+            <a class="btn btn-secondary" href="{{ url_for('folder.index') }}">← Library</a>
+            <a class="btn"
+               href="{{ url_for('file.download_file', filename=filename) }}">
+                Download PDF
+            </a>
+        </div>
+        
+{% endblock %}

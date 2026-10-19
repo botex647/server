@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+        <div class="eyebrow">PRIVATE SERVER</div>
+        <h2>Sign in to BOTEX</h2>
+        {% if message %}
+        <div class="notice notice-danger">{{ message }}</div>
+        {% endif %}
+
+        <div class="card">
+            <div class="file-icon">🔐</div>
+            <p class="muted">
+                Enter the server login password to access your library.
+            </p>
+
+            <form method="POST">
+                <input type="hidden" name="csrf_token" value="{{ token }}">
+
+                <label for="username">Username</label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    value="{{ request.form.get('username', 'viewer') }}"
+                    autocomplete="username"
+                    required
+                    autofocus>
+
+                <label for="password">Password</label>
+                <div class="password-field">
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        autocomplete="current-password"
+                        required>
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        aria-label="Show password"
+                        aria-controls="password"
+                        aria-pressed="false">
+                        <span class="eye-icon eye-open" aria-hidden="true">👁</span>
+                        <span class="eye-icon eye-closed" aria-hidden="true">🙈</span>
+                    </button>
+                </div>
+
+                <button type="submit">Sign in</button>
+            </form>
+        </div>
+        
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const passwordInput = document.getElementById("password");
+    const passwordToggle = document.querySelector(".password-toggle");
+
+    passwordToggle.addEventListener("click", () => {
+        const isPasswordVisible = passwordInput.type === "text";
+        passwordInput.type = isPasswordVisible ? "password" : "text";
+        passwordToggle.classList.toggle("is-visible", !isPasswordVisible);
+        passwordToggle.setAttribute("aria-label", isPasswordVisible ? "Show password" : "Hide password");
+        passwordToggle.setAttribute("aria-pressed", String(!isPasswordVisible));
+    });
+</script>
+{% endblock %}

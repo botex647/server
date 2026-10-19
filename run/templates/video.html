@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+        <div class="eyebrow">NOW PLAYING</div>
+        <h2>{{ filename }}</h2>
+
+        <div class="card">
+            <video controls preload="metadata" playsinline>
+                <source src="{{ url_for('file.serve_file', filename=filename) }}">
+                Your browser does not support this video format.
+            </video>
+            <p class="muted">Use the video timeline to seek forward or backward.</p>
+        </div>
+
+        <div class="toolbar">
+            <a class="btn btn-secondary" href="{{ url_for('folder.index') }}">← Library</a>
+        </div>
+        
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+            <div class="card">
+                <div class="eyebrow">UPLOAD COMPLETE</div>
+                <h2>Files added successfully.</h2>
+
+                <div class="notice notice-success">
+                    {{ saved|length }} file(s) uploaded.
+                </div>
+
+                <p>Destination: {{ target or 'server_share (root)' }}</p>
+
+                <ul>
+                {% for name in saved %}
+                    <li>{{ name }}</li>
+                {% endfor %}
+                </ul>
+
+                <div class="toolbar">
+                    <a class="btn"
+                       href="{{ url_for('folder.index', subpath=target) }}">
+                        Open folder
+                    </a>
+                    <a class="btn btn-secondary"
+                       href="{{ url_for('folder.upload') }}">Upload more</a>
+                </div>
+            </div>
+            
+{% endblock %}

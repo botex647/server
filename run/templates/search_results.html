@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+        <div class="eyebrow">LIBRARY SEARCH</div>
+        <h2>Search results</h2>
+        {% if query %}
+        <p class="muted">
+            Matches for <strong>{{ query }}</strong>
+            {% if results %} · Showing up to 200 results.{% endif %}
+        </p>
+        {% else %}
+        <p class="muted">Search for a file or folder by name.</p>
+        {% endif %}
+
+        <div class="toolbar">
+            <a class="btn btn-secondary" href="{{ url_for('search.search') }}">
+                Clear search
+            </a>
+        </div>
+
+        <div class="file-list">
+        {% for result in results %}
+            <a class="search-result" href="{{ result.url }}">
+                <span class="search-result-main">
+                    <span class="file-icon">{{ result.icon }}</span>
+                    <span>
+                        <span class="file-name">{{ result.name }}</span>
+                        <span class="file-type">
+                            {{ result.kind }} · {{ result.path }}
+                        </span>
+                    </span>
+                </span>
+            </a>
+        {% else %}
+            {% if query %}
+            <div class="empty">
+                No files or folders matched “{{ query }}”.
+            </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+        
+{% endblock %}

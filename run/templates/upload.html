@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+        <div class="eyebrow">ADD TO YOUR LIBRARY</div>
+        <h2>Upload files</h2>
+        <p class="muted">Choose any existing folder or upload to the root.</p>
+
+        <div class="card">
+            <form method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ token }}">
+
+                <label for="folder">Destination folder</label>
+                <select name="folder" id="folder" required>
+                    {% for folder in folders %}
+                    <option value="{{ folder }}">
+                        {{ folder or 'server_share (root)' }}
+                    </option>
+                    {% endfor %}
+                </select>
+
+                <label for="files">Choose files</label>
+                <input type="file" name="files" id="files" multiple required>
+
+                <p class="muted">Maximum request size: 10 GB.</p>
+                <button type="submit">↑ Upload files</button>
+            </form>
+        </div>
+
+        <a class="btn btn-secondary" href="{{ url_for('folder.index') }}">
+            ← Back to library
+        </a>
+        
+{% endblock %}

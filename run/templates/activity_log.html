@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+        <div class="eyebrow">ADMINISTRATION</div>
+        <h2>Activity log</h2>
+        <p class="muted">Showing all recorded operations.</p>
+
+        <form class="global-search activity-search" method="GET">
+            <input type="search" name="q" value="{{ search_query }}"
+                   placeholder="Search activity log" aria-label="Search activity log">
+            <button type="submit" aria-label="Search">
+                <img src="{{ url_for('static', filename='images/search.svg') }}" alt="" aria-hidden="true">
+            </button>
+            <a class="btn btn-secondary" href="{{ url_for('activity.activity_log') }}">
+                Clear
+            </a>
+        </form>
+
+        <div class="file-list">
+            {% if records %}
+            <div class="activity-table">
+                <table>
+                    <thead>
+                        <tr>
+                        {% for field in fields %}
+                            <th>{{ field.replace("_", " ")|title }}</th>
+                        {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for record in records %}
+                        <tr>
+                        {% for field in fields %}
+                            <td>{{ record.get(field, "") }}</td>
+                        {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty">No activity records match these filters.</div>
+            {% endif %}
+        </div>
+        
+{% endblock %}

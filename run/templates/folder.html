@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+        <div class="eyebrow">ORGANISE YOUR LIBRARY</div>
+        <h2>Create a folder</h2>
+        <p class="muted">Create folders at the root or inside another folder.</p>
+
+        <div class="card">
+            <form method="POST">
+                <input type="hidden" name="csrf_token" value="{{ token }}">
+
+                <label for="parent">Create inside</label>
+                <select name="parent" id="parent">
+                    {% for folder in folders %}
+                    <option value="{{ folder }}">
+                        {{ folder or 'server_share (root)' }}
+                    </option>
+                    {% endfor %}
+                </select>
+
+                <label for="folder_name">New folder name</label>
+                <input
+                    type="text"
+                    name="folder_name"
+                    id="folder_name"
+                    placeholder="e.g. Science Fiction"
+                    maxlength="100"
+                    required>
+
+                <button type="submit">＋ Create folder</button>
+            </form>
+        </div>
+
+        <a class="btn btn-secondary" href="{{ url_for('folder.index') }}">
+            ← Back to library
+        </a>
+        
+{% endblock %}

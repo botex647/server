@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#10121b">
+    <title>{{ title }} | BOTEX</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header class="topbar">
+            <a href="{{ url_for('folder.index') }}" class="brand">
+                <span class="brand-icon">◈</span>
+                <span><span class="brand-name">BOTEX</span><br>
+                <span class="brand-subtitle">PERSONAL FILE SERVER</span></span>
+            </a>
+            {% if session.get("authenticated") %}
+            <form class="global-search" method="GET" action="{{ url_for('search.search') }}">
+                <input type="search" name="q" value="{{ request.args.get('q', '') }}" maxlength="100" placeholder="Search files and folders" aria-label="Search files and folders">
+                <button type="submit" aria-label="Search">
+                    <img src="{{ url_for('static', filename='images/search.svg') }}" alt="" aria-hidden="true">
+                </button>
+            </form>
+            {% endif %}
+            {% if session.get("role") == "Administrator" %}
+            <nav class="admin-nav" aria-label="Administrator navigation">
+                <a class="btn btn-secondary" href="{{ url_for('folder.upload') }}">Upload</a>
+                <a class="btn btn-secondary" href="{{ url_for('folder.new_folder') }}">New Folder</a>
+                <a class="btn btn-secondary" href="{{ url_for('admin.delete_manager') }}">Manage Delete</a>
+                <a class="btn btn-secondary" href="{{ url_for('activity.activity_log') }}">Activity Log</a>
+            </nav>
+            {% endif %}
+            <span class="status">● Online</span>
+            {% if session.get("authenticated") %}
+            <a class="btn btn-secondary" href="{{ url_for('auth.logout') }}">Log out</a>
+            {% endif %}
+        </header>
+        <main>{% block content %}{% endblock %}</main>
+        <footer class="footer">BOTEX · Your personal media and study library</footer>
+    </div>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
